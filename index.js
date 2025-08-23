@@ -4,6 +4,7 @@ const { Pool } = require("pg");
 const bodyParser = require("body-parser");
 const path = require("path");
 const { default: mongoose } = require("mongoose");
+const Company = require("./models/Company");
 
 const app = express();
 
