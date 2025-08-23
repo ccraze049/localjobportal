@@ -1,0 +1,46 @@
+~/workspace$ node index
+(node:3405) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3405) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+Server is running on port 3000
+MongoDB connection error: MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+    at _handleConnectionErrors (/home/runner/workspace/node_modules/mongoose/lib/connection.js:1165:11)
+    at NativeConnection.openUri (/home/runner/workspace/node_modules/mongoose/lib/connection.js:1096:11) {
+  errorLabelSet: Set(0) {},
+  reason: TopologyDescription {
+    type: 'ReplicaSetNoPrimary',
+    servers: Map(3) {
+      'ac-mf2jfkp-shard-00-00.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-01.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-02.1jij73n.mongodb.net:27017' => [ServerDescription]
+    },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: 'atlas-im038t-shard-0',
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  },
+  code: undefined,
+  cause: TopologyDescription {
+    type: 'ReplicaSetNoPrimary',
+    servers: Map(3) {
+      'ac-mf2jfkp-shard-00-00.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-01.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-02.1jij73n.mongodb.net:27017' => [ServerDescription]
+    },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: 'atlas-im038t-shard-0',
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  }
+}
+~/workspace$ 
