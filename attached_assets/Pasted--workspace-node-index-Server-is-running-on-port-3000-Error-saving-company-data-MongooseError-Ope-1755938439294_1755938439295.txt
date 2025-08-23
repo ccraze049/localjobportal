@@ -1,0 +1,46 @@
+~/workspace$ node index
+Server is running on port 3000
+Error saving company data: MongooseError: Operation `companies.insertOne()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/runner/workspace/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:187:23)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+MongoDB connection error: MongooseServerSelectionError: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+    at _handleConnectionErrors (/home/runner/workspace/node_modules/mongoose/lib/connection.js:1165:11)
+    at NativeConnection.openUri (/home/runner/workspace/node_modules/mongoose/lib/connection.js:1096:11) {
+  errorLabelSet: Set(0) {},
+  reason: TopologyDescription {
+    type: 'ReplicaSetNoPrimary',
+    servers: Map(3) {
+      'ac-mf2jfkp-shard-00-00.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-01.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-02.1jij73n.mongodb.net:27017' => [ServerDescription]
+    },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: 'atlas-im038t-shard-0',
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  },
+  code: undefined,
+  cause: TopologyDescription {
+    type: 'ReplicaSetNoPrimary',
+    servers: Map(3) {
+      'ac-mf2jfkp-shard-00-00.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-01.1jij73n.mongodb.net:27017' => [ServerDescription],
+      'ac-mf2jfkp-shard-00-02.1jij73n.mongodb.net:27017' => [ServerDescription]
+    },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: 'atlas-im038t-shard-0',
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  }
+}
