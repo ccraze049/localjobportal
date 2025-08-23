@@ -1,24 +1,45 @@
+
 const express = require("express");
-const mongoose = require("mongoose");
+const { Pool } = require("pg");
 const bodyParser = require("body-parser");
 const path = require("path");
 
 const app = express();
-
-// Import Company model
-const Company = require("./models/Company");
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-// MongoDB connection
+// PostgreSQL connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
-mongoose
-.connect("mongodb+srv://ccraze049:G6WM0aBf7fII38C6@job.1jij73n.mongodb.net/?retryWrites=true&w=majority&appName=job");
+// Initialize database table
+async function initDatabase() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS companies (
+        id SERIAL PRIMARY KEY,
+        district VARCHAR(100) NOT NULL,
+        role VARCHAR(200) NOT NULL,
+        company_name VARCHAR(200) NOT NULL,
+        address TEXT NOT NULL,
+        phone VARCHAR(10) NOT NULL,
+        whatsapp VARCHAR(10) NOT NULL,
+        openings INTEGER NOT NULL,
+        education VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Database table initialized");
+  } catch (error) {
+    console.error("Database initialization error:", error);
+  }
+}
 
-
+initDatabase();
 
 // Routes
 app.get("/", (req, res) => {
@@ -47,25 +68,17 @@ app.post("/submit-company", async (req, res) => {
       education,
     } = req.body;
 
-    // Create new company document
-    const newCompany = new Company({
-      district,
-      role,
-      companyName,
-      address,
-      phone,
-      whatsapp,
-      openings: parseInt(openings),
-      education,
-    });
-
-    // Save to MongoDB
-    await newCompany.save();
+    // Insert into PostgreSQL
+    const result = await pool.query(`
+      INSERT INTO companies (district, role, company_name, address, phone, whatsapp, openings, education)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *
+    `, [district, role, companyName, address, phone, whatsapp, parseInt(openings), education]);
 
     res.json({
       success: true,
       message: "Company data saved successfully!",
-      data: newCompany,
+      data: result.rows[0],
     });
   } catch (error) {
     console.error("Error saving company data:", error);
@@ -77,17 +90,17 @@ app.post("/submit-company", async (req, res) => {
   }
 });
 
-// Get all companies (optional route to view stored data)
+// Get all companies
 app.get("/api/companies", async (req, res) => {
   try {
-    const companies = await Company.find().sort({ createdAt: -1 });
-    res.json(companies);
+    const result = await pool.query("SELECT * FROM companies ORDER BY created_at DESC");
+    res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });
