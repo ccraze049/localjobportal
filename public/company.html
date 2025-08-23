@@ -210,7 +210,7 @@
       Company Form
       <span class="emoji" aria-label="Briefcase" role="img">💼</span>
     </h2>
-    <form>
+    <form id="companyForm">
       <div class="form-group">
         <input type="text" id="district" name="district" placeholder=" " required>
         <label for="district">District</label>
@@ -259,10 +259,41 @@
   <!-- Toggle Script -->
   <script>
     const wave = document.getElementById('wave');
+    const form = document.getElementById('companyForm');
 
     wave.addEventListener('click', () => {
       wave.classList.toggle('top');
       wave.classList.toggle('bottom');
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      try {
+        const response = await fetch('/submit-company', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('Company data saved successfully!');
+          form.reset();
+        } else {
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error submitting form. Please try again.');
+      }
     });
   </script>
 </body>
