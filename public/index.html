@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Job Finder</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="header">
+      <nav style="display: flex; width: 100%;  padding: 0 10px; justify-content: space-between;">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="companyform.html" class="nav-link">Company Form</a>
+        <a href="aboutme.html" class="nav-link">About Me</a>
+
+      </nav>
+    </header>
+
+    <main>
+      <p></p>
+      <section id="upper" class="search-section">
+        <h2>नौकरी ढूँढे</h2>
+        <form id="jobForm">
+          <div class="form-group">
+            <label for="district">जिला</label>
+            <select required name="district" id="district">
+              <option disabled value="no" selected>Select District</option>
+              <option value="Saharanpur">सहारनपुर</option>
+              <option value="Muzaffarnagar">मुज़फ्फरनगर</option>
+              <option value="Shamli">शामली</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="education">शिक्षा स्तर</label>
+            <select required name="education" id="education">
+              <option disabled value="no" selected>Select Education Level</option>
+              <option value="High">High school</option>
+              <option value="Bachelor">Bachelor's</option>
+              <option value="8th">8th Pass</option>
+              <option value="Intermediate">
+                Intermediate or Higher
+              </option>
+              <option value="Diploma">Diploma </option>
+            </select>
+          </div>
+
+          <button type="button" class="search-btn" onclick="showJobs()">
+            नौकरी दिखाओ
+          </button>
+        </form>
+      </section>
+
+      <section id="job-list" class="job-list"></section>
+    </main>
+
+    <img
+      id="footimg"
+      src="https://www.vize.com/wwwengine/img/about_members.jpg"
+    />
+
+    <!-- Script section -->
+    <script src="app.js"></script>
+  </body>
+</html>
