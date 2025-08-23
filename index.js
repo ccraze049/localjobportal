@@ -13,6 +13,10 @@ app.get("/companyform", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "company.html"));
 });
 
+app.get("/aboutme", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "about.html"));
+});
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
