@@ -1,70 +1,441 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Local Job Finder</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <header id="header">
-      <nav
-        style="
-          display: flex;
-          width: 100%;
-          padding: 0 10px;
-          justify-content: space-between;
-        "
-      >
-        <a href="/" class="nav-link">Home</a>
-        <a href="/companyform" class="nav-link">Company Form</a>
-        <a href="/aboutme" class="nav-link">About Me</a>
-      </nav>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Company Form</title>
 
-    <main>
-      <p></p>
-      <section id="upper" class="search-section">
-        <h2>नौकरी ढूँढे</h2>
-        <form id="jobForm">
-          <div class="form-group">
-            <label for="district">जिला</label>
-            <select required name="district" id="district">
-              <option disabled value="no" selected>Select District</option>
-              <option value="Saharanpur">सहारनपुर</option>
-              <option value="Muzaffarnagar">मुज़फ्फरनगर</option>
-              <option value="Shamli">शामली</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="education">शिक्षा स्तर</label>
-            <select required name="education" id="education">
-              <option disabled value="no" selected>
-                Select Education Level
-              </option>
-              <option value="High">High school</option>
-              <option value="Bachelor">Bachelor's</option>
-              <option value="8th">8th Pass</option>
-              <option value="Intermediate">Intermediate or Higher</option>
-              <option value="Diploma">Diploma</option>
-            </select>
-          </div>
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600&display=swap" rel="stylesheet">
 
-          <button type="button" class="search-btn" onclick="showJobs()">
-            नौकरी दिखाओ
-          </button>
-        </form>
-      </section>
+  <style>
+    :root {
+      --accent-color: #6a11cb;
+      --accent-hover: #2575fc;
+      --form-bg: #ffffff;
+      --text-color: #333;
+    }
 
-      <section id="job-list" class="job-list"></section>
-    </main>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <img
-      id="footimg"
-      src="https://www.vize.com/wwwengine/img/about_members.jpg"
-    />
+    body {
+      font-family: 'Urbanist', sans-serif;
+      background: #fff;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
 
-    <!-- Script section -->
-    <script src="app.js"></script>
-  </body>
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--accent-color);
+      padding: 20px 40px;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      padding: 0 12px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .form-wrapper {
+      max-width: 600px;
+      background: var(--form-bg);
+      margin: 0 auto 120px auto;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+      position: relative;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--accent-color);
+      font-weight: 700;
+      font-size: 40px;
+      border: 2px solid var(--accent-color);
+      border-radius: 50px;
+      padding: 10px 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      user-select: none;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: fit-content;
+    }
+
+    h2 .emoji {
+      font-size: 42px;
+      line-height: 1;
+      user-select: none;
+      transition: transform 0.3s ease;
+    }
+
+    h2 .emoji:hover {
+      transform: scale(1.2) rotate(10deg);
+      cursor: default;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      background: #f9f9f9;
+      color: var(--text-color);
+      outline: none;
+      transition: 0.3s ease;
+      appearance: none;
+    }
+
+    .form-group select {
+      background: #f9f9f9 url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%236a11cb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center/12px 8px;
+      cursor: pointer;
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 90px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--accent-color);
+      background-color: #fff;
+    }
+
+    .form-group label {
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      background: #fff;
+      padding: 0 6px;
+      color: #888;
+      font-size: 15px;
+      transition: 0.2s ease all;
+      pointer-events: none;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      top: -10px;
+      left: 12px;
+      font-size: 13px;
+      color: var(--accent-color);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background: var(--accent-color);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+    }
+
+    .wave-toggle {
+      position: fixed;
+      width: 100%;
+      height: 220px;
+      background-color: var(--accent-color);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 1.2s ease-in-out;
+      z-index: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .wave-toggle.top {
+      top: 0;
+      bottom: auto;
+      transform: translateY(0%);
+    }
+
+    .wave-toggle svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .phone-input .phone-wrapper {
+      display: flex;
+      align-items: center;
+      background: #f9f9f9;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      padding-left: 14px;
+      transition: 0.3s ease;
+    }
+
+    .phone-input .phone-wrapper:focus-within {
+      border-color: var(--accent-color);
+      background-color: #fff;
+    }
+
+    .phone-input .prefix {
+      font-size: 16px;
+      color: #555;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+
+    .phone-input input {
+      border: none;
+      background: transparent;
+      padding: 14px 0;
+      flex: 1;
+      font-size: 16px;
+      color: var(--text-color);
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      .form-wrapper {
+        padding: 30px 20px;
+        margin: 0 15px 120px 15px;
+      }
+
+      h2 {
+        font-size: 28px;
+        padding: 8px 25px;
+        gap: 12px;
+      }
+
+      h2 .emoji {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <a href="/experience">Home</a>
+      <a href="/aboutme">About Me</a>
+    </nav>
+  </header>
+
+  <!-- Form Box -->
+  <div class="form-wrapper">
+    <h2>
+      <span class="emoji" aria-label="Office Building" role="img">🏢</span>
+      Company Form
+      <span class="emoji" aria-label="Briefcase" role="img">💼</span>
+    </h2>
+    <form>
+      <div class="form-group">
+        <select id="district" name="district" required>
+          <option value="" disabled selected>Select District</option>
+          <option>Agra</option>
+          <option>Aligarh</option>
+          <option>Allahabad (Prayagraj)</option>
+          <option>Ambedkar Nagar</option>
+          <option>Amethi</option>
+          <option>Auraiya</option>
+          <option>Azamgarh</option>
+          <option>Baghpat</option>
+          <option>Bahraich</option>
+          <option>Ballia</option>
+          <option>Balrampur</option>
+          <option>Banda</option>
+          <option>Bareilly</option>
+          <option>Basti</option>
+          <option>Bhadohi</option>
+          <option>Bulandshahr</option>
+          <option>Chandauli</option>
+          <option>Chitrakoot</option>
+          <option>Deoria</option>
+          <option>Etah</option>
+          <option>Etawah</option>
+          <option>Faizabad (Ayodhya)</option>
+          <option>Farrukhabad</option>
+          <option>Fatehpur</option>
+          <option>Firozabad</option>
+          <option>Gautam Buddha Nagar</option>
+          <option>Ghaziabad</option>
+          <option>Ghazipur</option>
+          <option>Gonda</option>
+          <option>Gorakhpur</option>
+          <option>Hamirpur</option>
+          <option>Hapur</option>
+          <option>Hardoi</option>
+          <option>Hathras</option>
+          <option>Jalaun</option>
+          <option>Jaunpur</option>
+          <option>Jhansi</option>
+          <option>Kannauj</option>
+          <option>Kanpur Dehat</option>
+          <option>Kanpur Nagar</option>
+          <option>Kanshiram Nagar (Kasganj)</option>
+          <option>Kaushambi</option>
+          <option>Kushinagar</option>
+          <option>Lakhimpur Kheri</option>
+          <option>Lalitpur</option>
+          <option>Lucknow</option>
+          <option>Mahrajganj</option>
+          <option>Mahoba</option>
+          <option>Mainpuri</option>
+          <option>Mathura</option>
+          <option>Mau</option>
+          <option>Meerut</option>
+          <option>Mirzapur</option>
+          <option>Moradabad</option>
+          <option>Muzaffarnagar</option>
+          <option>Pratapgarh</option>
+          <option>Raebareli</option>
+          <option>Rampur</option>
+          <option>Saharanpur</option>
+          <option>Shahjahanpur</option>
+          <option>Shamli</option>
+          <option>Shrawasti</option>
+          <option>Siddharthnagar</option>
+          <option>Sitapur</option>
+          <option>Sonebhadra</option>
+          <option>Sultanpur</option>
+          <option>Unnao</option>
+          <option>Varanasi</option>
+        </select>
+        <label for="district">District</label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="role" name="role" placeholder=" " required>
+        <label for="role">Role</label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="companyName" name="companyName" placeholder=" " required>
+        <label for="companyName">Company Name</label>
+      </div>
+
+      <div class="form-group">
+        <textarea id="address" name="address" placeholder=" " required></textarea>
+        <label for="address">Address</label>
+      </div>
+
+      <div class="form-group phone-input">
+        <div class="phone-wrapper">
+          <span class="prefix">+91</span>
+          <input type="tel" id="phone" name="phone" placeholder=" " required maxlength="10" minlength="10" pattern="[0-9]{10}">
+        </div>
+        <label for="phone">Phone Number</label>
+      </div>
+
+      <div class="form-group phone-input">
+        <div class="phone-wrapper">
+          <span class="prefix">+91</span>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder=" " required maxlength="10" minlength="10" pattern="[0-9]{10}">
+        </div>
+        <label for="whatsapp">WhatsApp Number</label>
+      </div>
+
+      <div class="form-group">
+        <input type="number" id="openings" name="openings" placeholder=" " required min="1" max="1000">
+        <label for="openings">Openings</label>
+      </div>
+
+      <div class="form-group">
+        <select id="education" name="education" required>
+          <option value="" disabled selected>Education Required</option>
+          <option>8th Pass</option>
+          <option>10th Pass</option>
+          <option>12th Pass</option>
+          <option>Diploma</option>
+          <option>Graduation</option>
+          <option>Post Graduation</option>
+          <option>MBA</option>
+          <option>PhD</option>
+        </select>
+        <label for="education">Education Required</label>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Clickable Liquid Wave -->
+  <div class="wave-toggle bottom" id="wave">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="#6a11cb" fill-opacity="1"
+        d="M0,288L48,261.3C96,235,192,181,288,160C384,139,480,149,576,154.7C672,160,768,160,864,...
+        L0,0Z">
+      </path>
+    </svg>
+  </div>
+
+  <script>
+    const wave = document.getElementById('wave');
+    wave.addEventListener('click', () => {
+      wave.classList.toggle('top');
+      wave.classList.toggle('bottom');
+    });
+  </script>
+</body>
 </html>

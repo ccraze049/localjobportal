@@ -1,44 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Local Job Finder</title>
-    <link rel="stylesheet" href="style.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Me - Local Job Finder</title>
+  <style>
+    :root {
+      --accent-color: #6c63ff;
+      --home-bg: var(--accent-color);
+      --home-hover-bg: #514dcf;
+      --secondary-color: #f5f5f5;
+    }
 
-    <style>
-      @media (width > 640px) {
-        main {
-          width: 100vw;
-        }
-        p {
-          font-size: 40px;
-        }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--secondary-color);
+      color: #333;
+    }
+
+    header {
+      background: var(--accent-color);
+      color: white;
+      padding: 20px 0;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      font-weight: 600;
+      background-color: var(--home-bg);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      user-select: none;
+    }
+
+    nav a:hover {
+      background-color: var(--home-hover-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(108, 99, 255, 0.1);
+    }
+
+    h1 {
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+    }
+
+    .info {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      line-height: 1.7;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      color: var(--accent-color);
+      margin-top: 30px;
+      margin-bottom: 12px;
+    }
+
+    footer {
+      background: #eee;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 15px 0;
       }
-    </style>
-  </head>
-  <body>
-   <header id="header">
-      <nav style="display: flex; width: 100%;  padding: 0 10px; justify-content: space-between;">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/companyform" class="nav-link">Company Form</a>
-        <a href="/aboutme" class="nav-link">About Me</a>
 
-      </nav>
-    </header>
+      nav {
+        padding: 0 12px;
+      }
 
-    <main>
-      <p style="font-weight: bold">
-        मेरा नाम लविश है मैं S A M inter college Saharanpur की कक्षा 10 में
-        पढ़ता हूं मेरे परिवार में कुल 7 सदस्य हैं मेरे पापा का व्यवसाय मजदूरी है
-        मेरी मम्मी House Wife है मुझे इस कोड योगी कोर्स के बारे मे मेरे Teacher
-        और Principal sir के द्वारा पता लगा था मैंने इस कोड योगी कोर्स को म‍ई
-        2024 में शुरू किया था और इसको करते हुए मुझे आज 6 महीने हो गए है इस कोर्स
-        की सहायता से मैंने तीन भाषाओं का ज्ञान कर लिया है जिसमें HTML CSS और JS
-        को अच्छे से कर रहा हूं और मैं इस कोर्स को अपने फोन से कर रहा हूं फ्यूचर
-        में सब कुछ कोडिंग की हेल्प से वर्क होंगे इसलिए मैं इसको सीखना चाहता हूं
-        और एक अच्छा वेब डेवलपर बनना चाहता हूं
-      </p>
-    </main>
-  </body>
+      nav a {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+      }
+
+      main {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .info {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>About Me</h1>
+
+    <div class="info">
+      <strong>Name:</strong> Lavish<br />
+      <strong>School:</strong> S.A.M. Inter College, Saharanpur<br />
+      <strong>District:</strong> Saharanpur<br />
+      <strong>Class:</strong> 11th (Science Stream)<br />
+      <strong>Interest:</strong> Web Development (Full Stack Developer)
+    </div>
+
+    <h2 class="section-title">About This Website</h2>
+    <div class="info">
+      This website is built to help the people of <strong>Uttar Pradesh</strong> find local jobs based on their <strong>district</strong> and <strong>educational qualification</strong>.<br /><br />
+
+      <strong>Registration:</strong> Users can register on this platform to search or post jobs based on their location and qualifications.<br /><br />
+
+      <strong>Company Form:</strong> Local businesses and companies can submit job openings using the company form.<br /><br />
+
+      <strong>Future Features:</strong><br />
+      - Job alerts via Email or WhatsApp<br />
+      - Resume/CV builder tool<br />
+      - Real-time job application tracking<br />
+      - Mobile app version<br />
+      - Filters for salary, experience, and job type
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Local Job Finder. All rights reserved.
+  </footer>
+
+</body>
 </html>
