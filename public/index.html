@@ -436,6 +436,43 @@
       wave.classList.toggle('top');
       wave.classList.toggle('bottom');
     });
+
+    // Form submission handling
+    document.querySelector('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        district: document.getElementById('district').value,
+        role: document.getElementById('role').value,
+        companyName: document.getElementById('companyName').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        openings: document.getElementById('openings').value,
+        education: document.getElementById('education').value
+      };
+
+      try {
+        const response = await fetch('/submit-company', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('Company data submitted successfully!');
+          document.querySelector('form').reset();
+        } else {
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        alert('Error submitting form: ' + error.message);
+      }
+    });
   </script>
 </body>
 </html>

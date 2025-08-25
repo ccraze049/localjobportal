@@ -30,6 +30,14 @@ app.get("/aboutme", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "about.html"));
 });
 
+app.get("/experience", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/companies", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "comanydata.html"));
+});
+
 // Handle company form submission
 app.post("/submit-company", async (req, res) => {
   try {
@@ -77,8 +85,8 @@ app.post("/submit-company", async (req, res) => {
 // Get all companies
 app.get("/api/companies", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM companies ORDER BY created_at DESC");
-    res.json(result.rows);
+    const companies = await Company.find().sort({ createdAt: -1 });
+    res.json(companies);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

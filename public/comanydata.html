@@ -63,39 +63,55 @@
   <script>
     const dataContainer = document.getElementById('data-container');
 
-    // Fetch data from localStorage
-    const savedData = localStorage.getItem('companyFormData');
+    // Fetch data from backend API
+    async function loadCompanies() {
+      try {
+        const response = await fetch('/api/companies');
+        const companies = await response.json();
 
-    if (savedData) {
-      const data = JSON.parse(savedData);
+        if (companies.length > 0) {
+          const table = document.createElement('table');
+          table.innerHTML = `
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Role</th>
+                <th>District</th>
+                <th>Phone</th>
+                <th>Openings</th>
+                <th>Education</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${companies.map(company => `
+                <tr>
+                  <td>${company.companyName}</td>
+                  <td>${company.role}</td>
+                  <td>${company.district}</td>
+                  <td>${company.phone}</td>
+                  <td>${company.openings}</td>
+                  <td>${company.education}</td>
+                  <td>${new Date(company.createdAt).toLocaleDateString()}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          `;
 
-      const table = document.createElement('table');
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Field</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>District</td><td>${data.district}</td></tr>
-          <tr><td>Role</td><td>${data.role}</td></tr>
-          <tr><td>Company Name</td><td>${data.companyName}</td></tr>
-          <tr><td>Address</td><td>${data.address}</td></tr>
-          <tr><td>Phone Number</td><td>${data.phone}</td></tr>
-          <tr><td>WhatsApp Number</td><td>${data.whatsapp}</td></tr>
-          <tr><td>Openings</td><td>${data.openings}</td></tr>
-          <tr><td>Education Required</td><td>${data.education}</td></tr>
-        </tbody>
-      `;
-
-      dataContainer.appendChild(table);
-    } else {
-      dataContainer.innerHTML = '<p class="no-data">No data submitted yet.</p>';
+          dataContainer.appendChild(table);
+        } else {
+          dataContainer.innerHTML = '<p class="no-data">No companies submitted yet.</p>';
+        }
+      } catch (error) {
+        dataContainer.innerHTML = '<p class="no-data">Error loading data: ' + error.message + '</p>';
+      }
     }
 
+    // Load companies when page loads
+    loadCompanies();
+
     function goBack() {
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }
   </script>
 </body>
