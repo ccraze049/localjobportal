@@ -87,6 +87,7 @@
               <th>Role</th>
               <th>District</th>
               <th>Phone</th>
+              <th>WhatsApp</th>
               <th>Openings</th>
               <th>Education</th>
               <th>Date</th>
@@ -101,6 +102,7 @@
                 <td>${company.role}</td>
                 <td>${company.district}</td>
                 <td><a href="tel:+91${company.phone}" class="phone-link">+91 ${company.phone}</a></td>
+                <td><a href="https://wa.me/91${company.whatsapp}" class="phone-link" target="_blank">+91 ${company.whatsapp}</a></td>
                 <td>${company.openings}</td>
                 <td>${company.education}</td>
                 <td>${new Date(company.createdAt).toLocaleDateString()}</td>
