@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Successfully Submitted</title>
+  <style>
+    :root {
+      --accent-color: #b721ff; /* Purple */
+      --accent-gradient: linear-gradient(135deg, #b721ff, #fd72d9); /* Purple → Pink */
+      --text-dark: #222;
+      --bg-color: #f9f4fd; /* Soft pinky background */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .message-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .message-card::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: -40%;
+      width: 180%;
+      height: 180%;
+      background: var(--accent-gradient);
+      opacity: 0.12;
+      z-index: -1;
+      transform: rotate(25deg);
+    }
+
+    .icon-circle {
+      width: 70px;
+      height: 70px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .icon-circle svg {
+      width: 34px;
+      height: 34px;
+      fill: white;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--text-dark);
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .btn-back {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-back:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .message-card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="message-card">
+    <div class="icon-circle">
+      <!-- Checkmark Icon -->
+      <svg viewBox="0 0 24 24">
+        <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20 8l-1.4-1.4z"/>
+      </svg>
+    </div>
+    <h2>Form Submitted!</h2>
+    <p>
+      Dhanyavaad! <span class="highlight">Aapka form</span> safalta se submit ho gaya hai. <br/>
+      Hum jald hi aap se sampark karenge. 😊
+    </p>
+    <a href"/">
+    <button class="btn-back">🔙 Back</button></a>
+  </div>
+
+</body>
+</html>

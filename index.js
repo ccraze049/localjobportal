@@ -43,7 +43,7 @@ app.get("/companies", (req, res) => {
 
 // Handle company form submission
 app.post("/submit-company", async (req, res) => {
-  try {
+
     const {
       district,
       role,
@@ -68,20 +68,8 @@ app.post("/submit-company", async (req, res) => {
 
     const savedCompany = await company.save();
 
-    res.json({
-      success: true,
-      message: "Company data saved successfully!",
-      data: savedCompany,
-    });
-  } catch (error) {
-    console.error("Error saving company data:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saving company data",
-      error: error.message,
-    });
-  }
-});
+    res.sendFile(path.join(__dirname, "public", "msg.html"))
+  } );
 
 // Get all companies
 app.get("/api/companies", async (req, res) => {
