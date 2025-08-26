@@ -1,118 +1,116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>View Company Form Data</title>
-  <style>
-    body {
-      font-family: 'Urbanist', sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      color: #333;
-    }
-    h1 {
-      color: #6a11cb;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 12px 15px;
-      text-align: left;
-    }
-    th {
-      background-color: #6a11cb;
-      color: white;
-    }
-    .no-data {
-      text-align: center;
-      color: #999;
-      margin-top: 40px;
-      font-size: 18px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 15px;
-      background-color: #6a11cb;
-      border: none;
-      color: white;
-      font-weight: 600;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2575fc;
-    }
-  </style>
-</head>
-<body>
-  <h1>Submitted Company Form Data</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>View Company Form Data</title>
+    <style>
+      body {
+        font-family: "Urbanist", sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #fff;
+        color: #333;
+      }
+      h1 {
+        color: #6a11cb;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        text-align: left;
+      }
+      th {
+        background-color: #6a11cb;
+        color: white;
+      }
+      .no-data {
+        text-align: center;
+        color: #999;
+        margin-top: 40px;
+        font-size: 18px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #6a11cb;
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #2575fc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Submitted Company Form Data</h1>
 
-  <div id="data-container"></div>
+    <div id="data-container"></div>
 
-  <button onclick="goBack()">Go Back to Form</button>
+    <button onclick="goBack()">Go Back to Form</button>
 
-  <script>
-    const dataContainer = document.getElementById('data-container');
+    <script>
+      const dataContainer = document.getElementById("data-container");
 
-    // Fetch data from backend API
-    async function loadCompanies() {
-      try {
-        const response = await fetch('/api/companies');
-        const companies = await response.json();
-
-        if (companies.length > 0) {
-          const table = document.createElement('table');
+      // Load companies when page loads
+      window.onload = () => {
+        const filteredCompanies =
+          JSON.parse(localStorage.getItem("filteredCompanies")) || [];
+        if (filteredCompanies.length > 0) {
+          const table = document.createElement("table");
           table.innerHTML = `
-            <thead>
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Role</th>
+              <th>District</th>
+              <th>Phone</th>
+              <th>Openings</th>
+              <th>Education</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredCompanies
+              .map(
+                (company) => `
               <tr>
-                <th>Company Name</th>
-                <th>Role</th>
-                <th>District</th>
-                <th>Phone</th>
-                <th>Openings</th>
-                <th>Education</th>
-                <th>Date</th>
+                <td>${company.companyName}</td>
+                <td>${company.role}</td>
+                <td>${company.district}</td>
+                <td>${company.phone}</td>
+                <td>${company.openings}</td>
+                <td>${company.education}</td>
+                <td>${new Date(company.createdAt).toLocaleDateString()}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${companies.map(company => `
-                <tr>
-                  <td>${company.companyName}</td>
-                  <td>${company.role}</td>
-                  <td>${company.district}</td>
-                  <td>${company.phone}</td>
-                  <td>${company.openings}</td>
-                  <td>${company.education}</td>
-                  <td>${new Date(company.createdAt).toLocaleDateString()}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          `;
-
+            `,
+              )
+              .join("")}
+          </tbody>
+        `;
           dataContainer.appendChild(table);
         } else {
-          dataContainer.innerHTML = '<p class="no-data">No companies submitted yet.</p>';
+          dataContainer.innerHTML =
+            '<p class="no-data">No companies found for the selected criteria.</p>';
         }
-      } catch (error) {
-        dataContainer.innerHTML = '<p class="no-data">Error loading data: ' + error.message + '</p>';
+        localStorage.removeItem("filteredCompanies"); // Clear the stored data
+      };
+
+      function goBack() {
+        window.location.href = "/";
       }
-    }
-
-    // Load companies when page loads
-    loadCompanies();
-
-    function goBack() {
-      window.location.href = '/';
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>

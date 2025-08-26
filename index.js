@@ -1,4 +1,3 @@
-
 const express = require("express");
 const { Pool } = require("pg");
 const bodyParser = require("body-parser");
@@ -13,9 +12,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://ccraze049:G6WM0aBf7fII38C6@job.1jij73n.mongodb.net/?retryWrites=true&w=majority&appName=job").then(() => {
-  console.log("Connected to MongoDB");
-})
+mongoose
+  .connect(
+    "mongodb+srv://ccraze049:G6WM0aBf7fII38C6@job.1jij73n.mongodb.net/?retryWrites=true&w=majority&appName=job",
+  )
+  .then(() => {
+    console.log("Connected to MongoDB");
+  });
 
 // Routes
 app.get("/", (req, res) => {
@@ -70,7 +73,6 @@ app.post("/submit-company", async (req, res) => {
       message: "Company data saved successfully!",
       data: savedCompany,
     });
-
   } catch (error) {
     console.error("Error saving company data:", error);
     res.status(500).json({
@@ -81,13 +83,33 @@ app.post("/submit-company", async (req, res) => {
   }
 });
 
-
 // Get all companies
 app.get("/api/companies", async (req, res) => {
   try {
     const companies = await Company.find().sort({ createdAt: -1 });
     res.json(companies);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/companies/filter", async (req, res) => {
+  const { district, education } = req.query;
+  try {
+    const filterCriteria = {};
+    if (district) filterCriteria.district = district;
+    if (education) filterCriteria.education = education;
+
+    const companies = await Company.find(filterCriteria).sort({
+      createdAt: -1,
+    });
+
+    // Log the filtered companies array to debug
+    console.log("Filtered Companies:", companies);
+
+    res.json(companies);
+  } catch (error) {
+    console.error("Error fetching filtered companies:", error);
     res.status(500).json({ error: error.message });
   }
 });
