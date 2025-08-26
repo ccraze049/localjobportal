@@ -534,13 +534,12 @@
               }),
             });
 
-            if (!response.ok) {
-              throw new Error(result.message || "Error submitting the form");
+            if (response.ok) {
+              // Form submitted successfully, redirect to msg.html
+              window.location.href = "/msg.html";
+            } else {
+              throw new Error("Error submitting the form");
             }
-
-            alert(result.message);
-            // Optionally, reset the form if needed
-            document.getElementById("companyForm").reset();
           } catch (error) {
             alert("Error: " + error.message);
           }
