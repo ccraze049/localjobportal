@@ -1,13 +1,3 @@
 
-[build]
-  command = "npm run build"
-  publish = "public"
-
-[functions]
-  directory = "functions"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = true
+# This file is not needed for a Node.js Express application
+# Consider deploying on Replit instead for full backend support
