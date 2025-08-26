@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"  # You may need a build command here, adjust as necessary
+  publish = "public"          # Directory to publish (your HTML files)
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
+[[functions]]
+  directory = "functions"  # Directory for serverless functions if needed
