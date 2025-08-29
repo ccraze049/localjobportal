@@ -41,6 +41,14 @@ app.get("/companies", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "comanydata.html"));
 });
 
+app.get("/company-details", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "company-details.html"));
+});
+
+app.get("/company-management", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "company-management.html"));
+});
+
 // Handle company form submission
 app.post("/submit-company", async (req, res) => {
   try {
@@ -103,6 +111,43 @@ app.get("/api/companies/filter", async (req, res) => {
     res.json(companies);
   } catch (error) {
     console.error("Error fetching filtered companies:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Search for specific company by name and district
+app.get("/api/company-details", async (req, res) => {
+  const { companyName, district } = req.query;
+  try {
+    const company = await Company.findOne({
+      companyName: { $regex: new RegExp(companyName, "i") },
+      district: district,
+    });
+
+    if (!company) {
+      return res.status(404).json({ error: "Company not found" });
+    }
+
+    res.json(company);
+  } catch (error) {
+    console.error("Error fetching company details:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete company
+app.delete("/api/companies/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCompany = await Company.findByIdAndDelete(id);
+
+    if (!deletedCompany) {
+      return res.status(404).json({ error: "Company not found" });
+    }
+
+    res.json({ message: "Company deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting company:", error);
     res.status(500).json({ error: error.message });
   }
 });

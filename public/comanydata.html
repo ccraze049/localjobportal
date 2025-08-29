@@ -89,6 +89,8 @@
               <th>Phone</th>
               <th>WhatsApp</th>
               <th>Openings</th>
+              <th>Hired</th>
+              <th>Status</th>
               <th>Education</th>
               <th>Date</th>
             </tr>
@@ -96,7 +98,14 @@
           <tbody>
             ${filteredCompanies
               .map(
-                (company) => `
+                (company) => {
+                  const hiredNumbers = JSON.parse(localStorage.getItem(`hired_${company._id}`)) || [];
+                  const hiredCount = hiredNumbers.length;
+                  const isComplete = hiredCount >= company.openings;
+                  const statusText = isComplete ? 'COMPLETE' : `${hiredCount}/${company.openings}`;
+                  const statusColor = isComplete ? '#28a745' : '#6a11cb';
+                  
+                  return `
               <tr>
                 <td>${company.companyName}</td>
                 <td>${company.role}</td>
@@ -104,10 +113,13 @@
                 <td><a href="tel:+91${company.phone}" class="phone-link">+91 ${company.phone}</a></td>
                 <td><a href="https://wa.me/91${company.whatsapp}" class="phone-link" target="_blank">+91 ${company.whatsapp}</a></td>
                 <td>${company.openings}</td>
+                <td>${hiredNumbers.join(', ') || 'None'}</td>
+                <td style="color: ${statusColor}; font-weight: 600;">${statusText}</td>
                 <td>${company.education}</td>
                 <td>${new Date(company.createdAt).toLocaleDateString()}</td>
               </tr>
-            `,
+            `;
+                }
               )
               .join("")}
           </tbody>
