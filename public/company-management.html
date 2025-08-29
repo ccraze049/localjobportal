@@ -399,23 +399,32 @@
               method: "DELETE",
             });
 
+            const result = await response.json();
+
             if (response.ok) {
               // Also remove hiring data from localStorage
               const storageKey = `hired_${company._id}`;
               localStorage.removeItem(storageKey);
               localStorage.removeItem("selectedCompany");
               
-              // Redirect to delete success page
-              window.location.href = "/delete-success";
+              // Redirect to delete success page with proper delay
+              setTimeout(() => {
+                window.location.href = "/delete-success";
+              }, 100);
             } else if (response.status === 404) {
-              // Company not found
-              window.location.href = "/company-not-found";
+              // Company not found - redirect with delay
+              setTimeout(() => {
+                window.location.href = "/company-not-found";
+              }, 100);
             } else {
-              throw new Error("Error deleting company data");
+              throw new Error(result.error || "Error deleting company data");
             }
           } catch (error) {
             console.error("Delete error:", error);
-            alert("Error: " + error.message);
+            // Show error and redirect to not found page
+            setTimeout(() => {
+              window.location.href = "/company-not-found";
+            }, 100);
           }
         }
       }

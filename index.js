@@ -160,6 +160,25 @@ app.delete("/api/companies/:id", async (req, res) => {
   }
 });
 
+// Save user feedback
+app.post("/api/feedback", (req, res) => {
+  try {
+    const { rating, type } = req.body;
+    const feedback = {
+      rating,
+      type,
+      timestamp: new Date().toISOString(),
+      ip: req.ip || req.connection.remoteAddress
+    };
+    
+    console.log("User feedback received:", feedback);
+    res.json({ message: "Feedback saved successfully", feedback });
+  } catch (error) {
+    console.error("Error saving feedback:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
