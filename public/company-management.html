@@ -405,8 +405,7 @@
               localStorage.removeItem(storageKey);
               localStorage.removeItem("selectedCompany");
               
-              alert("Company data deleted successfully!");
-              window.location.href = "/company-details";
+              window.location.href = "/delete-success";
             } else {
               throw new Error("Error deleting company data");
             }

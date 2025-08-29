@@ -49,6 +49,14 @@ app.get("/company-management", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "company-management.html"));
 });
 
+app.get("/delete-success", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "delete-success.html"));
+});
+
+app.get("/company-not-found", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "company-not-found.html"));
+});
+
 // Handle company form submission
 app.post("/submit-company", async (req, res) => {
   try {

@@ -304,7 +304,7 @@
               localStorage.setItem("selectedCompany", JSON.stringify(company));
               window.location.href = "/company-management";
             } else if (response.status === 404) {
-              alert("Company not found with the given details.");
+              window.location.href = "/company-not-found";
             } else {
               throw new Error("Error searching for company");
             }
