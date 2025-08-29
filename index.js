@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const { default: mongoose } = require("mongoose");
 const Company = require("./models/Company");
+const Feedback = require("./models/Feedback");
 
 const app = express();
 
@@ -161,20 +162,34 @@ app.delete("/api/companies/:id", async (req, res) => {
 });
 
 // Save user feedback
-app.post("/api/feedback", (req, res) => {
+app.post("/api/feedback", async (req, res) => {
   try {
-    const { rating, type } = req.body;
-    const feedback = {
+    const { rating, type, companyName, district } = req.body;
+    
+    const feedback = new Feedback({
       rating,
       type,
-      timestamp: new Date().toISOString(),
+      companyName: companyName || null,
+      district: district || null,
       ip: req.ip || req.connection.remoteAddress
-    };
+    });
     
-    console.log("User feedback received:", feedback);
-    res.json({ message: "Feedback saved successfully", feedback });
+    const savedFeedback = await feedback.save();
+    console.log("User feedback saved to MongoDB:", savedFeedback);
+    res.json({ message: "Feedback saved successfully", feedback: savedFeedback });
   } catch (error) {
     console.error("Error saving feedback:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all feedback data
+app.get("/api/feedback", async (req, res) => {
+  try {
+    const feedback = await Feedback.find().sort({ timestamp: -1 });
+    res.json(feedback);
+  } catch (error) {
+    console.error("Error fetching feedback:", error);
     res.status(500).json({ error: error.message });
   }
 });

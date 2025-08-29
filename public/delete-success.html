@@ -268,33 +268,34 @@
       // Mark selected button
       event.target.closest('.rating-btn').classList.add('selected');
       
-      // Save feedback to localStorage
+      // Get deleted company info from localStorage
+      const deletedCompanies = JSON.parse(localStorage.getItem('deletedCompanies')) || [];
+      const lastDeleted = deletedCompanies.length > 0 ? deletedCompanies[deletedCompanies.length - 1] : null;
+      
+      // Prepare feedback data
       const feedback = {
         rating: rating,
-        timestamp: new Date().toISOString(),
-        type: 'company_deletion'
+        type: 'company_deletion',
+        companyName: lastDeleted ? lastDeleted.companyName : null,
+        district: lastDeleted ? lastDeleted.district : null
       };
       
-      // Get existing feedback array or create new one
-      let feedbackData = JSON.parse(localStorage.getItem('userFeedback')) || [];
-      feedbackData.push(feedback);
-      localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
-      
-      // Also save to server
+      // Save to server (MongoDB)
       fetch('/api/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(feedback)
+      }).then(response => {
+        if (response.ok) {
+          // Show success message
+          document.getElementById('feedbackSuccess').style.display = 'block';
+          console.log('Feedback saved to MongoDB:', feedback);
+        }
       }).catch(error => {
         console.error('Error saving feedback to server:', error);
       });
-      
-      // Show success message
-      document.getElementById('feedbackSuccess').style.display = 'block';
-      
-      console.log('Feedback saved:', feedback);
     }
   </script>
 </body>

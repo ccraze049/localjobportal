@@ -342,18 +342,20 @@
     }
 
     function loadExperienceData() {
-      // Get feedback data from localStorage
-      const feedbackData = JSON.parse(localStorage.getItem('userFeedback')) || [];
+      // Clear old localStorage data
+      localStorage.removeItem('userFeedback');
+      localStorage.removeItem('deletedCompanies');
       
-      // Get company data to match with feedback
-      fetch('/api/companies')
+      // Get feedback data from MongoDB
+      fetch('/api/feedback')
         .then(response => response.json())
-        .then(companies => {
-          displayExperienceData(feedbackData, companies);
+        .then(feedbackData => {
+          console.log('Feedback from MongoDB:', feedbackData);
+          displayExperienceData(feedbackData, []);
         })
         .catch(error => {
-          console.error('Error loading companies:', error);
-          displayExperienceData(feedbackData, []);
+          console.error('Error loading feedback:', error);
+          displayExperienceData([], []);
         });
     }
 
@@ -372,23 +374,19 @@
         company_search_not_found: { good: 0, bad: 0 }
       };
 
-      // Process feedback data to extract company information
+      // Process feedback data from MongoDB
       feedbackData.forEach(feedback => {
         if (feedback.type === 'company_deletion') {
           otherFeedback.company_deletion[feedback.rating]++;
           
-          // Try to get company name from recently deleted companies in localStorage
-          const deletedCompanies = JSON.parse(localStorage.getItem('deletedCompanies')) || [];
-          if (deletedCompanies.length > 0) {
-            const lastDeleted = deletedCompanies[deletedCompanies.length - 1];
-            if (lastDeleted && lastDeleted.companyName) {
-              otherFeedback.company_deletion.companies.add(lastDeleted.companyName);
-              
-              if (!companyFeedback[lastDeleted.companyName]) {
-                companyFeedback[lastDeleted.companyName] = { good: 0, bad: 0 };
-              }
-              companyFeedback[lastDeleted.companyName][feedback.rating]++;
+          // Use company name from MongoDB feedback data
+          if (feedback.companyName) {
+            otherFeedback.company_deletion.companies.add(feedback.companyName);
+            
+            if (!companyFeedback[feedback.companyName]) {
+              companyFeedback[feedback.companyName] = { good: 0, bad: 0 };
             }
+            companyFeedback[feedback.companyName][feedback.rating]++;
           }
         } else if (feedback.type === 'company_search_not_found') {
           otherFeedback.company_search_not_found[feedback.rating]++;

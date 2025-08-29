@@ -264,25 +264,23 @@
       // Mark selected button
       event.target.closest('.rating-btn').classList.add('selected');
       
-      // Save feedback to localStorage
+      // Prepare feedback data
       const feedback = {
         rating: rating,
-        timestamp: new Date().toISOString(),
         type: 'company_search_not_found'
       };
       
-      // Get existing feedback array or create new one
-      let feedbackData = JSON.parse(localStorage.getItem('userFeedback')) || [];
-      feedbackData.push(feedback);
-      localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
-      
-      // Also save to server
+      // Save to server (MongoDB)
       fetch('/api/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(feedback)
+      }).then(response => {
+        if (response.ok) {
+          console.log('Feedback saved to MongoDB:', feedback);
+        }
       }).catch(error => {
         console.error('Error saving feedback to server:', error);
       });
