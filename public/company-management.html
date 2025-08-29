@@ -402,6 +402,15 @@
             const result = await response.json();
 
             if (response.ok) {
+              // Store deleted company info for experience tracking
+              const deletedCompanies = JSON.parse(localStorage.getItem('deletedCompanies')) || [];
+              deletedCompanies.push({
+                companyName: company.companyName,
+                district: company.district,
+                deletedAt: new Date().toISOString()
+              });
+              localStorage.setItem('deletedCompanies', JSON.stringify(deletedCompanies));
+              
               // Also remove hiring data from localStorage
               const storageKey = `hired_${company._id}`;
               localStorage.removeItem(storageKey);

@@ -368,26 +368,68 @@
       // Group feedback by type and company
       const companyFeedback = {};
       const otherFeedback = {
-        company_deletion: { good: 0, bad: 0 },
+        company_deletion: { good: 0, bad: 0, companies: new Set() },
         company_search_not_found: { good: 0, bad: 0 }
       };
 
+      // Process feedback data to extract company information
       feedbackData.forEach(feedback => {
-        if (feedback.type === 'company_deletion' || feedback.type === 'company_search_not_found') {
-          if (otherFeedback[feedback.type]) {
-            otherFeedback[feedback.type][feedback.rating]++;
+        if (feedback.type === 'company_deletion') {
+          otherFeedback.company_deletion[feedback.rating]++;
+          
+          // Try to get company name from recently deleted companies in localStorage
+          const deletedCompanies = JSON.parse(localStorage.getItem('deletedCompanies')) || [];
+          if (deletedCompanies.length > 0) {
+            const lastDeleted = deletedCompanies[deletedCompanies.length - 1];
+            if (lastDeleted && lastDeleted.companyName) {
+              otherFeedback.company_deletion.companies.add(lastDeleted.companyName);
+              
+              if (!companyFeedback[lastDeleted.companyName]) {
+                companyFeedback[lastDeleted.companyName] = { good: 0, bad: 0 };
+              }
+              companyFeedback[lastDeleted.companyName][feedback.rating]++;
+            }
           }
+        } else if (feedback.type === 'company_search_not_found') {
+          otherFeedback.company_search_not_found[feedback.rating]++;
         }
       });
 
-      let html = '';
+      // Count total companies with experience data
+      const totalCompaniesCount = Object.keys(companyFeedback).length;
+      const systemExperienceCount = (otherFeedback.company_deletion.good + otherFeedback.company_deletion.bad) + 
+                                   (otherFeedback.company_search_not_found.good + otherFeedback.company_search_not_found.bad);
 
-      // Show company-specific feedback (if any)
+      let html = `
+        <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0;">📊 Experience Summary</h3>
+          <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">
+              <div style="font-size: 24px; font-weight: bold;">${totalCompaniesCount}</div>
+              <div style="font-size: 12px; opacity: 0.9;">Companies</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">
+              <div style="font-size: 24px; font-weight: bold;">${feedbackData.length}</div>
+              <div style="font-size: 12px; opacity: 0.9;">Total Feedback</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px;">
+              <div style="font-size: 24px; font-weight: bold;">${systemExperienceCount}</div>
+              <div style="font-size: 12px; opacity: 0.9;">System Experience</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Show company-specific feedback
       Object.keys(companyFeedback).forEach(companyName => {
         const stats = companyFeedback[companyName];
+        const totalCompanyFeedback = stats.good + stats.bad;
         html += `
           <div class="experience-item">
             <div class="company-name">🏢 ${companyName}</div>
+            <div style="font-size: 14px; color: #666; margin: 5px 0;">
+              Total Experience: ${totalCompanyFeedback} feedback received
+            </div>
             <div class="feedback-stats">
               <div class="stat-item thumbs-up">
                 👍 ${stats.good} Positive
@@ -405,6 +447,9 @@
         html += `
           <div class="experience-item">
             <div class="company-name">🗑️ Company Deletion Experience</div>
+            <div style="font-size: 14px; color: #666; margin: 5px 0;">
+              Total Companies Deleted: ${otherFeedback.company_deletion.companies.size} companies
+            </div>
             <div class="feedback-stats">
               <div class="stat-item thumbs-up">
                 👍 ${otherFeedback.company_deletion.good} Positive
@@ -421,6 +466,9 @@
         html += `
           <div class="experience-item">
             <div class="company-name">🔍 Company Search Experience</div>
+            <div style="font-size: 14px; color: #666; margin: 5px 0;">
+              Search attempts: ${otherFeedback.company_search_not_found.good + otherFeedback.company_search_not_found.bad} times
+            </div>
             <div class="feedback-stats">
               <div class="stat-item thumbs-up">
                 👍 ${otherFeedback.company_search_not_found.good} Positive
