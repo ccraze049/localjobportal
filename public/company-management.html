@@ -405,11 +405,16 @@
               localStorage.removeItem(storageKey);
               localStorage.removeItem("selectedCompany");
               
+              // Redirect to delete success page
               window.location.href = "/delete-success";
+            } else if (response.status === 404) {
+              // Company not found
+              window.location.href = "/company-not-found";
             } else {
               throw new Error("Error deleting company data");
             }
           } catch (error) {
+            console.error("Delete error:", error);
             alert("Error: " + error.message);
           }
         }
