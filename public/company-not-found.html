@@ -276,6 +276,23 @@
       feedbackData.push(feedback);
       localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
       
+      // Also save to server
+      fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(feedback)
+      }).catch(error => {
+        console.error('Error saving feedback to server:', error);
+      });
+      
+      // Show success message
+      document.getElementById('feedbackSuccess').style.display = 'block';
+      
+      console.log('Feedback saved:', feedback);ack);
+      localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
+      
       // Show success message
       document.getElementById('feedbackSuccess').style.display = 'block';
       

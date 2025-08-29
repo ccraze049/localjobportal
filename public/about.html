@@ -128,6 +128,7 @@
   <header>
     <nav>
       <a href="/">Home</a>
+      <a href="#" onclick="openUserExperience()">User Experience</a>
     </nav>
   </header>
 
@@ -162,6 +163,305 @@
   <footer>
     &copy; 2025 Local Job Finder. All rights reserved.
   </footer>
+
+  <!-- Password Modal -->
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closePasswordModal()">&times;</span>
+      <h2>Enter Password</h2>
+      <input type="password" id="passwordInput" placeholder="Enter password">
+      <button onclick="verifyPassword()">Submit</button>
+      <div id="passwordError" class="error-message"></div>
+    </div>
+  </div>
+
+  <!-- User Experience Modal -->
+  <div id="experienceModal" class="modal">
+    <div class="modal-content experience-content">
+      <span class="close" onclick="closeExperienceModal()">&times;</span>
+      <h2>📊 User Experience Data</h2>
+      <div id="experienceData">
+        <!-- Experience data will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .experience-content {
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close:hover {
+      color: var(--accent-color);
+    }
+
+    #passwordInput {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #passwordInput:focus {
+      border-color: var(--accent-color);
+    }
+
+    .modal-content button {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .modal-content button:hover {
+      background: #514dcf;
+    }
+
+    .error-message {
+      color: #dc3545;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .experience-item {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      border-left: 4px solid var(--accent-color);
+      text-align: left;
+    }
+
+    .company-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+
+    .feedback-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .thumbs-up {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .thumbs-down {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      margin: 30px 0;
+    }
+  </style>
+
+  <script>
+    function openUserExperience() {
+      document.getElementById('passwordModal').style.display = 'block';
+      document.getElementById('passwordInput').focus();
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').style.display = 'none';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordError').textContent = '';
+    }
+
+    function closeExperienceModal() {
+      document.getElementById('experienceModal').style.display = 'none';
+    }
+
+    function verifyPassword() {
+      const password = document.getElementById('passwordInput').value;
+      const correctPassword = 'lavish@01';
+      
+      if (password === correctPassword) {
+        closePasswordModal();
+        loadExperienceData();
+        document.getElementById('experienceModal').style.display = 'block';
+      } else {
+        document.getElementById('passwordError').textContent = 'Incorrect password!';
+      }
+    }
+
+    function loadExperienceData() {
+      // Get feedback data from localStorage
+      const feedbackData = JSON.parse(localStorage.getItem('userFeedback')) || [];
+      
+      // Get company data to match with feedback
+      fetch('/api/companies')
+        .then(response => response.json())
+        .then(companies => {
+          displayExperienceData(feedbackData, companies);
+        })
+        .catch(error => {
+          console.error('Error loading companies:', error);
+          displayExperienceData(feedbackData, []);
+        });
+    }
+
+    function displayExperienceData(feedbackData, companies) {
+      const experienceDataDiv = document.getElementById('experienceData');
+      
+      if (feedbackData.length === 0) {
+        experienceDataDiv.innerHTML = '<div class="no-data">कोई user experience data नहीं मिला।</div>';
+        return;
+      }
+
+      // Group feedback by type and company
+      const companyFeedback = {};
+      const otherFeedback = {
+        company_deletion: { good: 0, bad: 0 },
+        company_search_not_found: { good: 0, bad: 0 }
+      };
+
+      feedbackData.forEach(feedback => {
+        if (feedback.type === 'company_deletion' || feedback.type === 'company_search_not_found') {
+          if (otherFeedback[feedback.type]) {
+            otherFeedback[feedback.type][feedback.rating]++;
+          }
+        }
+      });
+
+      let html = '';
+
+      // Show company-specific feedback (if any)
+      Object.keys(companyFeedback).forEach(companyName => {
+        const stats = companyFeedback[companyName];
+        html += `
+          <div class="experience-item">
+            <div class="company-name">🏢 ${companyName}</div>
+            <div class="feedback-stats">
+              <div class="stat-item thumbs-up">
+                👍 ${stats.good} Positive
+              </div>
+              <div class="stat-item thumbs-down">
+                👎 ${stats.bad} Negative
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Show system feedback
+      if (otherFeedback.company_deletion.good > 0 || otherFeedback.company_deletion.bad > 0) {
+        html += `
+          <div class="experience-item">
+            <div class="company-name">🗑️ Company Deletion Experience</div>
+            <div class="feedback-stats">
+              <div class="stat-item thumbs-up">
+                👍 ${otherFeedback.company_deletion.good} Positive
+              </div>
+              <div class="stat-item thumbs-down">
+                👎 ${otherFeedback.company_deletion.bad} Negative
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (otherFeedback.company_search_not_found.good > 0 || otherFeedback.company_search_not_found.bad > 0) {
+        html += `
+          <div class="experience-item">
+            <div class="company-name">🔍 Company Search Experience</div>
+            <div class="feedback-stats">
+              <div class="stat-item thumbs-up">
+                👍 ${otherFeedback.company_search_not_found.good} Positive
+              </div>
+              <div class="stat-item thumbs-down">
+                👎 ${otherFeedback.company_search_not_found.bad} Negative
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (html === '') {
+        html = '<div class="no-data">कोई valid feedback data नहीं मिला।</div>';
+      }
+
+      experienceDataDiv.innerHTML = html;
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const passwordModal = document.getElementById('passwordModal');
+      const experienceModal = document.getElementById('experienceModal');
+      
+      if (event.target === passwordModal) {
+        closePasswordModal();
+      }
+      if (event.target === experienceModal) {
+        closeExperienceModal();
+      }
+    }
+
+    // Handle Enter key in password input
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          verifyPassword();
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
