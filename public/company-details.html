@@ -274,6 +274,19 @@
         margin-top: 10px;
         font-weight: 600;
       }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      .close:hover {
+        color: var(--accent-color);
+      }
     </style>
   </head>
   <body>
@@ -288,6 +301,7 @@
     <!-- Password Modal -->
     <div id="passwordModal" class="modal" style="display: block;">
       <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
         <h2>🔒 Access Protected</h2>
         <p>Enter password to access Company Details:</p>
         <div class="password-input-wrapper">
@@ -422,6 +436,18 @@
         } else {
           passwordInput.type = 'password';
           toggleIcon.textContent = '👁️';
+        }
+      }
+
+      function closeModal() {
+        window.history.back();
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const modal = document.getElementById('passwordModal');
+        if (event.target === modal) {
+          closeModal();
         }
       }
 
