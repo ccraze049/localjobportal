@@ -290,41 +290,7 @@
         color: var(--accent-color);
       }
 
-      .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-left: 10px;
-        white-space: nowrap;
-        background: #f0f0f0;
-        padding: 6px 10px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s ease;
-      }
-
-      .checkbox-wrapper:hover {
-        background: #e8e8e8;
-        border-color: var(--accent-color);
-      }
-
-      .checkbox-wrapper input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        accent-color: var(--accent-color);
-        cursor: pointer;
-        border: 2px solid #ccc;
-        border-radius: 4px;
-      }
-
-      .checkbox-wrapper label {
-        font-size: 13px;
-        color: #555;
-        cursor: pointer;
-        user-select: none;
-        font-weight: 600;
-      }
+      
 
       @media (max-width: 480px) {
         .form-wrapper {
@@ -476,10 +442,6 @@
               pattern="[0-9]{10}"
             />
             <label for="phone">Phone Number</label>
-            <div class="checkbox-wrapper">
-              <input type="checkbox" id="sameAsPhone" checked onchange="copyPhoneToWhatsApp()">
-              <label for="sameAsPhone" style="position: static; font-size: 12px; color: #666; background: none; padding: 0;">Same as WhatsApp</label>
-            </div>
           </div>
         </div>
 
@@ -542,41 +504,7 @@
 
     <!-- ✅ JavaScript Section -->
     <script>
-      function copyPhoneToWhatsApp() {
-        const checkbox = document.getElementById('sameAsPhone');
-        const phoneInput = document.getElementById('phone');
-        const whatsappInput = document.getElementById('whatsapp');
-        
-        if (checkbox.checked) {
-          whatsappInput.value = phoneInput.value;
-        } else {
-          whatsappInput.value = '';
-        }
-        
-        // Trigger input event to animate label
-        const event = new Event('input', { bubbles: true });
-        whatsappInput.dispatchEvent(event);
-      }
-
-      // Wait for DOM to load before adding event listeners
-      document.addEventListener('DOMContentLoaded', function() {
-        // Auto-update WhatsApp when phone number changes and checkbox is checked
-        const phoneInput = document.getElementById('phone');
-        const whatsappInput = document.getElementById('whatsapp');
-        
-        phoneInput.addEventListener('input', function() {
-          const checkbox = document.getElementById('sameAsPhone');
-          if (checkbox.checked) {
-            whatsappInput.value = phoneInput.value;
-            // Trigger input event to animate label
-            const event = new Event('input', { bubbles: true });
-            whatsappInput.dispatchEvent(event);
-          }
-        });
-        
-        // Initially copy phone to whatsapp since checkbox is checked by default
-        copyPhoneToWhatsApp();
-      });
+      
 
       document
         .getElementById("companyForm")
