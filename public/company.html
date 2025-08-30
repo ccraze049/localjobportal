@@ -464,7 +464,7 @@
             />
             <label for="phone">Phone Number</label>
             <div class="checkbox-wrapper">
-              <input type="checkbox" id="sameAsPhone" onchange="copyPhoneToWhatsApp()">
+              <input type="checkbox" id="sameAsPhone" checked onchange="copyPhoneToWhatsApp()">
               <label for="sameAsPhone" style="position: static; font-size: 12px; color: #666; background: none; padding: 0;">Same as WhatsApp</label>
             </div>
           </div>
@@ -536,26 +536,33 @@
         
         if (checkbox.checked) {
           whatsappInput.value = phoneInput.value;
-          // Trigger label animation by dispatching an input event
-          const event = new Event('input', { bubbles: true });
-          whatsappInput.dispatchEvent(event);
         } else {
           whatsappInput.value = '';
-          // Reset label position
-          const event = new Event('input', { bubbles: true });
-          whatsappInput.dispatchEvent(event);
         }
+        
+        // Trigger input event to animate label
+        const event = new Event('input', { bubbles: true });
+        whatsappInput.dispatchEvent(event);
       }
 
       // Wait for DOM to load before adding event listeners
       document.addEventListener('DOMContentLoaded', function() {
         // Auto-update WhatsApp when phone number changes and checkbox is checked
-        document.getElementById('phone').addEventListener('input', function() {
+        const phoneInput = document.getElementById('phone');
+        const whatsappInput = document.getElementById('whatsapp');
+        
+        phoneInput.addEventListener('input', function() {
           const checkbox = document.getElementById('sameAsPhone');
           if (checkbox.checked) {
-            copyPhoneToWhatsApp();
+            whatsappInput.value = phoneInput.value;
+            // Trigger input event to animate label
+            const event = new Event('input', { bubbles: true });
+            whatsappInput.dispatchEvent(event);
           }
         });
+        
+        // Initially copy phone to whatsapp since checkbox is checked by default
+        copyPhoneToWhatsApp();
       });
 
       document
