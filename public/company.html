@@ -243,6 +243,7 @@
         border: 2px solid #eee;
         border-radius: 12px;
         padding-left: 14px;
+        padding-right: 14px;
         transition: 0.3s ease;
         position: relative;
       }
@@ -292,9 +293,10 @@
       .checkbox-wrapper {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        margin: 10px 0 0 14px;
-        gap: 8px;
+        justify-content: center;
+        gap: 5px;
+        margin-left: 10px;
+        white-space: nowrap;
       }
 
       .checkbox-wrapper input[type="checkbox"] {
@@ -461,10 +463,10 @@
               pattern="[0-9]{10}"
             />
             <label for="phone">Phone Number</label>
-          </div>
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="sameAsPhone" onchange="copyPhoneToWhatsApp()">
-            <label for="sameAsPhone">WhatsApp number same as phone number</label>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="sameAsPhone" onchange="copyPhoneToWhatsApp()">
+              <label for="sameAsPhone" style="position: static; font-size: 12px; color: #666; background: none; padding: 0;">Same as WhatsApp</label>
+            </div>
           </div>
         </div>
 
