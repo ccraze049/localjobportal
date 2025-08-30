@@ -221,6 +221,7 @@
         position: relative;
         width: 100%;
         margin: 15px 0;
+        box-sizing: border-box;
       }
 
       .modal-content input {
@@ -230,6 +231,7 @@
         border-radius: 8px;
         font-size: 16px;
         outline: none;
+        box-sizing: border-box;
       }
 
       .modal-content input:focus {
@@ -298,6 +300,11 @@
     </div>
 
     <div class="form-wrapper" id="mainContent" style="display: none;">
+      <div style="margin-bottom: 20px;">
+        <button type="button" onclick="window.history.back()" style="background: #6c757d; padding: 10px 20px; font-size: 14px; width: auto; border-radius: 8px;">
+          ← Back
+        </button>
+      </div>
       <h2>🔍 Company Details</h2>
       <form id="companySearchForm">
         <div class="form-group">
