@@ -17,45 +17,41 @@
       font-family: Arial, sans-serif;
       background: var(--secondary-color);
       color: #333;
+      padding-top: 80px;
     }
 
     header {
+      position: fixed;
+      top: 0;
+      width: 100%;
       background: var(--accent-color);
-      color: white;
-      padding: 20px 0;
+      padding: 20px 40px;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     nav {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
       padding: 0 20px;
-    }
-    
-    .nav-content {
-      display: flex;
-      gap: 10px;
     }
 
     nav a {
       color: white;
       text-decoration: none;
-      font-size: 1.2rem;
-      padding: 10px 20px;
-      border-radius: 8px;
-      transition: background-color 0.3s, box-shadow 0.3s;
+      font-size: 1.1rem;
+      padding: 0 12px;
       font-weight: 600;
-      background-color: var(--home-bg);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
       user-select: none;
-      margin-right: 10px;
+      white-space: nowrap;
     }
 
     nav a:hover {
-      background-color: var(--home-hover-bg);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      text-decoration: underline;
     }
 
     main {
