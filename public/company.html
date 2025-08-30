@@ -292,8 +292,8 @@
       .checkbox-wrapper {
         display: flex;
         align-items: center;
-        justify-content: center;
-        margin: 15px 0;
+        justify-content: flex-start;
+        margin: 10px 0 0 14px;
         gap: 8px;
       }
 
@@ -462,11 +462,10 @@
             />
             <label for="phone">Phone Number</label>
           </div>
-        </div>
-
-        <div class="checkbox-wrapper">
-          <input type="checkbox" id="sameAsPhone" onchange="copyPhoneToWhatsApp()">
-          <label for="sameAsPhone">WhatsApp number same as phone number</label>
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="sameAsPhone" onchange="copyPhoneToWhatsApp()">
+            <label for="sameAsPhone">WhatsApp number same as phone number</label>
+          </div>
         </div>
 
         <div class="form-group phone-input">
@@ -535,22 +534,26 @@
         
         if (checkbox.checked) {
           whatsappInput.value = phoneInput.value;
-          // Trigger label animation
-          if (whatsappInput.value) {
-            whatsappInput.focus();
-            whatsappInput.blur();
-          }
+          // Trigger label animation by dispatching an input event
+          const event = new Event('input', { bubbles: true });
+          whatsappInput.dispatchEvent(event);
         } else {
           whatsappInput.value = '';
+          // Reset label position
+          const event = new Event('input', { bubbles: true });
+          whatsappInput.dispatchEvent(event);
         }
       }
 
-      // Auto-update WhatsApp when phone number changes and checkbox is checked
-      document.getElementById('phone').addEventListener('input', function() {
-        const checkbox = document.getElementById('sameAsPhone');
-        if (checkbox.checked) {
-          copyPhoneToWhatsApp();
-        }
+      // Wait for DOM to load before adding event listeners
+      document.addEventListener('DOMContentLoaded', function() {
+        // Auto-update WhatsApp when phone number changes and checkbox is checked
+        document.getElementById('phone').addEventListener('input', function() {
+          const checkbox = document.getElementById('sameAsPhone');
+          if (checkbox.checked) {
+            copyPhoneToWhatsApp();
+          }
+        });
       });
 
       document
