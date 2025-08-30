@@ -38,12 +38,29 @@
         color: white;
         text-decoration: none;
         font-size: 1.1rem;
-        padding: 0 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        background: var(--accent-color);
+        border-radius: 8px;
+        transition: all 0.3s ease;
       }
+      nav a:hover {
+        background: #514dcf;
+        text-decoration: none;
+        transform: translateY(-2px);
+      }
+
       nav a:nth-child(2) {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+      }
+
+      nav a:nth-child(2):hover {
+        transform: translateX(-50%) translateY(-2px);
       }
       main {
         flex: 1;
