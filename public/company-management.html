@@ -233,13 +233,7 @@
         </div>
 
         <div class="add-hire-form" id="addHireForm">
-          <input
-            type="number"
-            id="hireNumber"
-            placeholder="Enter hire number"
-            min="1"
-          />
-          <button type="button" onclick="addHire()">Add Hire</button>
+          <button type="button" onclick="addHire()" style="width: 100%;">Add Next Hire</button>
         </div>
 
         <div class="hired-list" id="hiredList">
@@ -350,32 +344,19 @@
       }
 
       function addHire() {
-        const hireNumberInput = document.getElementById("hireNumber");
-        const hireNumber = parseInt(hireNumberInput.value);
-
-        if (!hireNumber || hireNumber < 1 || hireNumber > company.openings) {
-          alert(`Please enter a valid hire number between 1 and ${company.openings}`);
-          return;
-        }
-
-        if (hiredNumbers.includes(hireNumber)) {
-          alert("This hire number already exists!");
-          return;
-        }
-
         if (hiredNumbers.length >= company.openings) {
           alert("All positions are already filled!");
           return;
         }
 
-        hiredNumbers.push(hireNumber);
-        hiredNumbers.sort((a, b) => a - b);
+        // Find the next sequential number to add
+        const nextHireNumber = hiredNumbers.length + 1;
+
+        hiredNumbers.push(nextHireNumber);
         
         saveHiredNumbers();
         displayHiredNumbers();
         updateStatus();
-        
-        hireNumberInput.value = "";
       }
 
       function removeHire(index) {
