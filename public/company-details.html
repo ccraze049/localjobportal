@@ -318,6 +318,20 @@
         </div>
 
         <div class="form-group">
+          <input
+            type="tel"
+            id="phoneNumber"
+            name="phoneNumber"
+            placeholder=" "
+            required
+            maxlength="10"
+            minlength="10"
+            pattern="[0-9]{10}"
+          />
+          <label for="phoneNumber">Phone Number</label>
+        </div>
+
+        <div class="form-group">
           <select id="district" name="district" required>
             <option value="" disabled selected>Select District</option>
             <option>Agra</option>
@@ -392,41 +406,151 @@
           <label for="district">District</label>
         </div>
 
-        <button type="submit">Search Company</button>
+        <button type="submit" id="searchBtn">Send OTP & Search</button>
       </form>
     </div>
 
+    <!-- OTP Verification Modal -->
+    <div id="otpModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h2>📱 OTP Verification</h2>
+        <p>OTP sent to <span id="otpPhoneDisplay"></span></p>
+        <div class="form-group" style="position: relative; margin: 20px 0;">
+          <input
+            type="text"
+            id="otpInput"
+            placeholder=" "
+            required
+            maxlength="6"
+            minlength="6"
+            pattern="[0-9]{6}"
+            style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; outline: none; text-align: center; letter-spacing: 2px; font-weight: bold;"
+          />
+          <label for="otpInput" style="position: absolute; left: 16px; top: 12px; background: #fff; padding: 0 6px; color: #888; font-size: 15px; transition: 0.2s ease all; pointer-events: none;">Enter OTP</label>
+        </div>
+        <button onclick="verifyOTP()" style="width: 100%; margin-bottom: 10px;">Verify OTP</button>
+        <button onclick="resendOTP()" style="width: 100%; background: #6c757d;">Resend OTP</button>
+        <div id="otpError" class="error-message"></div>
+      </div>
+    </div>
+
     <script>
+      let generatedOTP = '';
+      let searchData = {};
+
+      // Focus labels
+      document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+          input.addEventListener('focus', function() {
+            this.nextElementSibling.style.top = '-10px';
+            this.nextElementSibling.style.fontSize = '13px';
+            this.nextElementSibling.style.color = 'var(--accent-color)';
+          });
+          
+          input.addEventListener('blur', function() {
+            if (this.value === '') {
+              this.nextElementSibling.style.top = '12px';
+              this.nextElementSibling.style.fontSize = '15px';
+              this.nextElementSibling.style.color = '#888';
+            }
+          });
+        });
+      });
+
       document
         .getElementById("companySearchForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const companyName = document
-            .getElementById("companyName")
-            .value.trim();
+          const phoneNumber = document.getElementById("phoneNumber").value.trim();
+          const companyName = document.getElementById("companyName").value.trim();
           const district = document.getElementById("district").value;
 
-          try {
-            const response = await fetch(
-              `/api/company-details?companyName=${encodeURIComponent(
-                companyName
-              )}&district=${encodeURIComponent(district)}`
-            );
-
-            if (response.ok) {
-              const company = await response.json();
-              localStorage.setItem("selectedCompany", JSON.stringify(company));
-              window.location.href = "/company-management";
-            } else if (response.status === 404) {
-              window.location.href = "/company-not-found";
-            } else {
-              throw new Error("Error searching for company");
-            }
-          } catch (error) {
-            alert("Error: " + error.message);
+          // Validate phone number
+          if (!/^[0-9]{10}$/.test(phoneNumber)) {
+            alert("कृपया valid 10 digit phone number डालें!");
+            return;
           }
+
+          // Store search data
+          searchData = { phoneNumber, companyName, district };
+
+          // Generate OTP
+          await sendOTP(phoneNumber);
         });
+
+      async function sendOTP(phoneNumber) {
+        try {
+          // Generate 6 digit OTP
+          generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+          
+          // In real application, you would send SMS here
+          console.log(`OTP for ${phoneNumber}: ${generatedOTP}`);
+          
+          // For demo purposes, show OTP in alert (remove in production)
+          alert(`Demo OTP: ${generatedOTP}\n(In production, this would be sent via SMS)`);
+          
+          // Show OTP modal
+          document.getElementById('otpPhoneDisplay').textContent = phoneNumber;
+          document.getElementById('otpModal').style.display = 'block';
+          document.getElementById('otpInput').focus();
+          
+        } catch (error) {
+          alert("OTP send करने में error: " + error.message);
+        }
+      }
+
+      async function verifyOTP() {
+        const enteredOTP = document.getElementById('otpInput').value.trim();
+        
+        if (enteredOTP !== generatedOTP) {
+          document.getElementById('otpError').textContent = 'गलत OTP! फिर से try करें।';
+          return;
+        }
+
+        // OTP is correct, now search for company
+        try {
+          const response = await fetch(
+            `/api/company-details?companyName=${encodeURIComponent(
+              searchData.companyName
+            )}&district=${encodeURIComponent(searchData.district)}`
+          );
+
+          if (response.ok) {
+            const company = await response.json();
+            localStorage.setItem("selectedCompany", JSON.stringify(company));
+            window.location.href = "/company-management";
+          } else if (response.status === 404) {
+            window.location.href = "/company-not-found";
+          } else {
+            throw new Error("Error searching for company");
+          }
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      async function resendOTP() {
+        await sendOTP(searchData.phoneNumber);
+        document.getElementById('otpError').textContent = '';
+        document.getElementById('otpInput').value = '';
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const modal = document.getElementById('otpModal');
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      }
+
+      // Allow Enter key for OTP verification
+      document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && document.getElementById('otpModal').style.display === 'block') {
+          verifyOTP();
+        }
+      });
     </script>
   </body>
 </html>
