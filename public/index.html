@@ -33,7 +33,6 @@
         max-width: 1200px;
         margin: 0 auto;
         position: relative;
-        padding: 0 20px;
       }
       nav a {
         color: white;
@@ -47,7 +46,6 @@
         background: var(--accent-color);
         border-radius: 8px;
         transition: all 0.3s ease;
-        min-width: fit-content;
       }
       nav a:hover {
         background: #514dcf;
@@ -63,7 +61,6 @@
 
       nav a:nth-child(2):hover {
         transform: translateX(-50%) translateY(-2px);
-        left: 50%;
       }
       main {
         flex: 1;
@@ -195,22 +192,10 @@
         header {
           padding: 15px;
         }
-        nav {
-          flex-direction: column;
-          gap: 10px;
-          padding: 0;
-        }
         nav a:nth-child(2) {
           position: static;
           transform: none;
-          margin: 0;
-          order: 2;
-        }
-        nav a:nth-child(1) {
-          order: 1;
-        }
-        nav a:nth-child(3) {
-          order: 3;
+          margin: 10px 0;
         }
         .search-section {
           padding: 25px 20px;
