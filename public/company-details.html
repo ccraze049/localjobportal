@@ -317,19 +317,6 @@
           <label for="companyName">Company Name</label>
         </div>
 
-        <div class="form-group">
-          <input
-            type="tel"
-            id="phoneNumber"
-            name="phoneNumber"
-            placeholder=" "
-            required
-            maxlength="10"
-            minlength="10"
-            pattern="[0-9]{10}"
-          />
-          <label for="phoneNumber">Phone Number</label>
-        </div>
 
         <div class="form-group">
           <select id="district" name="district" required>
@@ -426,7 +413,7 @@
 
     <script>
       let searchData = {};
-      const correctPassword = 'lavish@01';
+      const correctPassword = 'company@01';
 
       // Focus labels
       document.addEventListener('DOMContentLoaded', function() {
@@ -453,18 +440,11 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const phoneNumber = document.getElementById("phoneNumber").value.trim();
           const companyName = document.getElementById("companyName").value.trim();
           const district = document.getElementById("district").value;
 
-          // Validate phone number
-          if (!/^[0-9]{10}$/.test(phoneNumber)) {
-            alert("कृपया valid 10 digit phone number डालें!");
-            return;
-          }
-
           // Store search data
-          searchData = { phoneNumber, companyName, district };
+          searchData = { companyName, district };
 
           // Show password modal
           document.getElementById('passwordModal').style.display = 'block';
