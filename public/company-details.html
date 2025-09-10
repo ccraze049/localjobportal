@@ -222,16 +222,18 @@
         width: 100%;
         margin: 15px 0;
         box-sizing: border-box;
+        display: inline-block;
       }
 
       .modal-content input {
         width: 100%;
-        padding: 12px 45px 12px 12px;
+        padding: 12px 50px 12px 12px;
         border: 2px solid #eee;
         border-radius: 8px;
         font-size: 16px;
         outline: none;
         box-sizing: border-box;
+        padding-right: 50px !important;
       }
 
       .modal-content input:focus {
@@ -240,13 +242,15 @@
 
       .password-toggle {
         position: absolute;
-        right: 12px;
+        right: 15px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
         font-size: 18px;
         color: #666;
         user-select: none;
+        z-index: 10;
+        pointer-events: auto;
       }
 
       .password-toggle:hover {
