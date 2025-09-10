@@ -406,37 +406,27 @@
           <label for="district">District</label>
         </div>
 
-        <button type="submit" id="searchBtn">Send OTP & Search</button>
+        <button type="submit" id="searchBtn">Enter Password & Search</button>
       </form>
     </div>
 
-    <!-- OTP Verification Modal -->
-    <div id="otpModal" class="modal" style="display: none;">
+    <!-- Password Verification Modal -->
+    <div id="passwordModal" class="modal" style="display: none;">
       <div class="modal-content">
-        <h2>📱 OTP Verification</h2>
-        <p>OTP sent to <span id="otpPhoneDisplay"></span></p>
-        <div class="form-group" style="position: relative; margin: 20px 0;">
-          <input
-            type="text"
-            id="otpInput"
-            placeholder=" "
-            required
-            maxlength="6"
-            minlength="6"
-            pattern="[0-9]{6}"
-            style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; outline: none; text-align: center; letter-spacing: 2px; font-weight: bold;"
-          />
-          <label for="otpInput" style="position: absolute; left: 16px; top: 12px; background: #fff; padding: 0 6px; color: #888; font-size: 15px; transition: 0.2s ease all; pointer-events: none;">Enter OTP</label>
+        <span class="close" onclick="closePasswordModal()">&times;</span>
+        <h2>🔒 Enter Password</h2>
+        <div class="password-input-wrapper">
+          <input type="password" id="passwordInput" placeholder="Enter password">
+          <span class="password-toggle" onclick="togglePasswordVisibility()">👁️</span>
         </div>
-        <button onclick="verifyOTP()" style="width: 100%; margin-bottom: 10px;">Verify OTP</button>
-        <button onclick="resendOTP()" style="width: 100%; background: #6c757d;">Resend OTP</button>
-        <div id="otpError" class="error-message"></div>
+        <button onclick="verifyPassword()">Submit</button>
+        <div id="passwordError" class="error-message"></div>
       </div>
     </div>
 
     <script>
-      let generatedOTP = '';
       let searchData = {};
+      const correctPassword = 'lavish@01';
 
       // Focus labels
       document.addEventListener('DOMContentLoaded', function() {
@@ -476,80 +466,77 @@
           // Store search data
           searchData = { phoneNumber, companyName, district };
 
-          // Generate OTP
-          await sendOTP(phoneNumber);
+          // Show password modal
+          document.getElementById('passwordModal').style.display = 'block';
+          document.getElementById('passwordInput').focus();
         });
 
-      async function sendOTP(phoneNumber) {
-        try {
-          // Generate 6 digit OTP
-          generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-          
-          // In real application, you would send SMS here
-          console.log(`OTP for ${phoneNumber}: ${generatedOTP}`);
-          
-          // For demo purposes, show OTP in alert (remove in production)
-          alert(`Demo OTP: ${generatedOTP}\n(In production, this would be sent via SMS)`);
-          
-          // Show OTP modal
-          document.getElementById('otpPhoneDisplay').textContent = phoneNumber;
-          document.getElementById('otpModal').style.display = 'block';
-          document.getElementById('otpInput').focus();
-          
-        } catch (error) {
-          alert("OTP send करने में error: " + error.message);
-        }
+      function closePasswordModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordError').textContent = '';
       }
 
-      async function verifyOTP() {
-        const enteredOTP = document.getElementById('otpInput').value.trim();
+      function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('passwordInput');
+        const toggleIcon = document.querySelector('.password-toggle');
         
-        if (enteredOTP !== generatedOTP) {
-          document.getElementById('otpError').textContent = 'गलत OTP! फिर से try करें।';
-          return;
-        }
-
-        // OTP is correct, now search for company
-        try {
-          const response = await fetch(
-            `/api/company-details?companyName=${encodeURIComponent(
-              searchData.companyName
-            )}&district=${encodeURIComponent(searchData.district)}`
-          );
-
-          if (response.ok) {
-            const company = await response.json();
-            localStorage.setItem("selectedCompany", JSON.stringify(company));
-            window.location.href = "/company-management";
-          } else if (response.status === 404) {
-            window.location.href = "/company-not-found";
-          } else {
-            throw new Error("Error searching for company");
-          }
-        } catch (error) {
-          alert("Error: " + error.message);
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleIcon.textContent = '🙈';
+        } else {
+          passwordInput.type = 'password';
+          toggleIcon.textContent = '👁️';
         }
       }
 
-      async function resendOTP() {
-        await sendOTP(searchData.phoneNumber);
-        document.getElementById('otpError').textContent = '';
-        document.getElementById('otpInput').value = '';
+      async function verifyPassword() {
+        const password = document.getElementById('passwordInput').value;
+        
+        if (password === correctPassword) {
+          closePasswordModal();
+          
+          // Password is correct, now search for company
+          try {
+            const response = await fetch(
+              `/api/company-details?companyName=${encodeURIComponent(
+                searchData.companyName
+              )}&district=${encodeURIComponent(searchData.district)}`
+            );
+
+            if (response.ok) {
+              const company = await response.json();
+              localStorage.setItem("selectedCompany", JSON.stringify(company));
+              window.location.href = "/company-management";
+            } else if (response.status === 404) {
+              window.location.href = "/company-not-found";
+            } else {
+              throw new Error("Error searching for company");
+            }
+          } catch (error) {
+            alert("Error: " + error.message);
+          }
+        } else {
+          document.getElementById('passwordError').textContent = 'गलत password! फिर से try करें।';
+        }
       }
 
       // Close modal when clicking outside
       window.onclick = function(event) {
-        const modal = document.getElementById('otpModal');
-        if (event.target === modal) {
-          modal.style.display = 'none';
+        const passwordModal = document.getElementById('passwordModal');
+        
+        if (event.target === passwordModal) {
+          closePasswordModal();
         }
       }
 
-      // Allow Enter key for OTP verification
-      document.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && document.getElementById('otpModal').style.display === 'block') {
-          verifyOTP();
-        }
+      // Handle Enter key in password input
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            verifyPassword();
+          }
+        });
       });
     </script>
   </body>
