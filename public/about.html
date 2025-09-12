@@ -200,9 +200,10 @@
             id="passwordInput"
             placeholder="Enter password"
           />
-          <span class="password-toggle" onclick="togglePasswordVisibility()"
-            >👁️</span
-          >
+          <div class="password-checkbox-wrapper">
+            <input type="checkbox" id="showPassword" onchange="togglePasswordVisibility()">
+            <label for="showPassword">Show Password</label>
+          </div>
         </div>
         <button onclick="verifyPassword()">Submit</button>
         <div id="passwordError" class="error-message"></div>
@@ -283,19 +284,23 @@
         border-color: var(--accent-color);
       }
 
-      .password-toggle {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 18px;
-        color: #666;
-        user-select: none;
+      .password-checkbox-wrapper {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      .password-toggle:hover {
-        color: var(--accent-color);
+      .password-checkbox-wrapper input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+      }
+
+      .password-checkbox-wrapper label {
+        margin: 0;
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
       }
 
       .modal-content button {
@@ -382,14 +387,12 @@
 
       function togglePasswordVisibility() {
         const passwordInput = document.getElementById("passwordInput");
-        const toggleIcon = document.querySelector(".password-toggle");
+        const showPasswordCheckbox = document.getElementById("showPassword");
 
-        if (passwordInput.type === "password") {
+        if (showPasswordCheckbox.checked) {
           passwordInput.type = "text";
-          toggleIcon.textContent = "🙈";
         } else {
           passwordInput.type = "password";
-          toggleIcon.textContent = "👁️";
         }
       }
 
