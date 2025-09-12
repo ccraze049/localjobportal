@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const { Pool } = require("pg");
 const bodyParser = require("body-parser");
@@ -8,20 +9,36 @@ const Feedback = require("./models/Feedback");
 
 const app = express();
 
+// Trust proxy for Replit environment
+app.set('trust proxy', true);
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://ccraze049:G6WM0aBf7fII38C6@job.1jij73n.mongodb.net/?retryWrites=true&w=majority&appName=job";
+// Add headers to handle CORS and caching
+app.use((req, res, next) => {
+  res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.header('Pragma', 'no-cache');
+  res.header('Expires', '0');
+  next();
+});
+
+// Require MONGODB_URI environment variable
+if (!process.env.MONGODB_URI) {
+  console.error("ERROR: MONGODB_URI environment variable is required");
+  process.exit(1);
+}
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })
   .catch((error) => {
     console.error("Failed to connect to MongoDB:", error);
+    process.exit(1);
   });
 
 // Routes
@@ -168,18 +185,21 @@ app.delete("/api/companies/:id", async (req, res) => {
 app.post("/api/feedback", async (req, res) => {
   try {
     const { rating, type, companyName, district } = req.body;
-    
+
     const feedback = new Feedback({
       rating,
       type,
       companyName: companyName || null,
       district: district || null,
-      ip: req.ip || req.connection.remoteAddress
+      ip: req.ip || req.connection.remoteAddress,
     });
-    
+
     const savedFeedback = await feedback.save();
     console.log("User feedback saved to MongoDB:", savedFeedback);
-    res.json({ message: "Feedback saved successfully", feedback: savedFeedback });
+    res.json({
+      message: "Feedback saved successfully",
+      feedback: savedFeedback,
+    });
   } catch (error) {
     console.error("Error saving feedback:", error);
     res.status(500).json({ error: error.message });
